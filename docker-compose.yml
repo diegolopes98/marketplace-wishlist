@@ -1,0 +1,25 @@
+version: '3'
+services:
+  cassandra:
+    image: cassandra:4.0.4
+    container_name: wishlist-cassandra
+    ports:
+      - "9042:9042"
+    environment:
+      - "MAX_HEAP_SIZE=256M"
+      - "HEAP_NEWSIZE=128M"
+    restart: always
+    healthcheck:
+        test: ["CMD", "cqlsh", "-u cassandra", "-p cassandra" ,"-e describe keyspaces"]
+        interval: 15s
+        timeout: 10s
+        retries: 10
+  cassandra-load-schema:
+      container_name: wishlist-cassandra-load-schema
+      image: cassandra:4.0.4
+      depends_on:
+        cassandra:
+          condition: service_healthy
+      volumes:
+        - ./.cassandra/scripts/schema.cql:/scripts/schema.cql
+      command: /bin/bash -c "echo loading cassandra schema && cqlsh cassandra -f /scripts/schema.cql"
