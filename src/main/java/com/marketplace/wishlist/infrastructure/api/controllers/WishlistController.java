@@ -14,6 +14,7 @@ import com.marketplace.wishlist.application.wishlist.getAll.GetAllUseCase;
 import com.marketplace.wishlist.infrastructure.models.ItemsRequest;
 import com.marketplace.wishlist.infrastructure.models.ItemsResponse;
 import com.marketplace.wishlist.infrastructure.models.WishlistResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +26,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/{customerId}/wishlist")
+@Slf4j
 public class WishlistController {
     private final AddUseCase addUseCase;
     private final DeleteUseCase deleteUseCase;
@@ -58,6 +60,7 @@ public class WishlistController {
                 body.description(),
                 body.amount()
         );
+        log.info("Creating wish {} into customer's {} wishlist", body, customerId);
         AddOutput output = addUseCase.execute(input);
         ItemsResponse response = new ItemsResponse(output.name(), output.description(), output.amount());
         return ResponseEntity
@@ -74,7 +77,7 @@ public class WishlistController {
                 UUID.fromString(customerId),
                 UUID.fromString(productId)
         );
-
+        log.info("Deleting wish {} of customer's {} wishlist", productId, customerId);
         this.deleteUseCase.execute(input);
 
         return ResponseEntity.noContent().build();
@@ -89,6 +92,7 @@ public class WishlistController {
                 UUID.fromString(customerId),
                 UUID.fromString(productId)
         );
+        log.info("Getting wish {} of customer's {} wishlist", productId, customerId);
         FindOutPut output = this.findUseCase.execute(input);
         ItemsResponse response = new ItemsResponse(
                 output.name(),
@@ -106,6 +110,7 @@ public class WishlistController {
         GetAllInput input = GetAllInput.with(
                 UUID.fromString(customerId)
         );
+        log.info("Getting all wishes of customer's {} wishlist", customerId);
         List<GetAllOutPut> outputList = this.getAllUseCase.execute(input);
         List<ItemsResponse> outputMapped = outputList
                 .stream()
