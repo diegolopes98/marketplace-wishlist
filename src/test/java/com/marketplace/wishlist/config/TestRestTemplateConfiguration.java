@@ -18,11 +18,11 @@ public class TestRestTemplateConfiguration {
 
     @Autowired
     public TestRestTemplateConfiguration(
-            @Value("${server.port}") String VCLOUD_AUTH_MANAGER_TEST_PORT) {
+            @Value("${server.port}") String port) {
         this.WISHLIST_FULL_URL = String.format(
                 "%s:%s",
                 WISHLIST_URI,
-                VCLOUD_AUTH_MANAGER_TEST_PORT
+                port
         );
     }
 
