@@ -6,12 +6,14 @@ import com.marketplace.wishlist.domain.Wishlist;
 import com.marketplace.wishlist.domain.WishlistGateway;
 import com.marketplace.wishlist.infrastructure.persistence.WishByCustomer;
 import com.marketplace.wishlist.infrastructure.persistence.WishByCustomerRepository;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+@Slf4j
 public class WishlistCassandraGateway implements WishlistGateway {
 
     private static final Integer MAX_SIZE = 20;
@@ -32,7 +34,9 @@ public class WishlistCassandraGateway implements WishlistGateway {
         );
 
         if (!this.validate(newWish.getCustomerId())) {
-            throw new Exception("Max items reached in wishlist");
+            Exception e = new Exception("Max items reached in wishlist");
+            log.error("Failed to generate new wish {} because of error {}", newWish, e);
+            throw e;
         }
 
         repository.save(newWish);
@@ -53,19 +57,33 @@ public class WishlistCassandraGateway implements WishlistGateway {
                         UUID.fromString(productId.getValue())
                 );
         if (wishToDelete.isEmpty()) {
-            throw new Exception("Not found product in wishlist");
+            Exception e = new Exception("Item not found in wishlist");
+            log.error(
+                    "Failed to delete wish {} of customer {} because of error {}",
+                    productId,
+                    customerId,
+                    e
+            );
+            throw e;
         }
         this.repository.delete(wishToDelete.get());
     }
 
     @Override
-    public Wish find(WishID customerID, WishID productId) throws Exception {
+    public Wish find(WishID customerId, WishID productId) throws Exception {
         Optional<WishByCustomer> wish = this.repository.findByCustomerIdAndProductId(
-                UUID.fromString(customerID.getValue()),
+                UUID.fromString(customerId.getValue()),
                 UUID.fromString(productId.getValue())
         );
         if (wish.isEmpty()) {
-            throw new Exception("Item not found in wishlist");
+            Exception e = new Exception("Item not found in wishlist");
+            log.error(
+                    "Failed to find wish {} of customer {} because of error {}",
+                    productId,
+                    customerId,
+                    e
+            );
+            throw e;
         }
         Wish found = new Wish(
                 WishID.from(wish.get().getCustomerId()),
