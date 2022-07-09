@@ -34,4 +34,22 @@ public class CommonStepDefinitions extends SpringIntegrationTest {
         }
         this.repository.saveAll(wishes);
     }
+
+    @Given("a customer id {string} with wishes at limit")
+    public void aCustomerIdWithWishesAtLimit(String customerId) {
+        List<WishByCustomer> wishes = new LinkedList<>();
+        for (int i = 0; i < 20; i++) {
+            wishes.add(
+                    new WishByCustomer(
+                            UUID.fromString(customerId),
+                            UUID.randomUUID(),
+                            "some name",
+                            "some description",
+                            10000
+                    )
+            );
+        }
+        this.repository.saveAll(wishes);
+        this.repository.countByCustomerId(UUID.fromString(customerId));
+    }
 }
