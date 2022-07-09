@@ -99,14 +99,17 @@ public class WishlistController {
                 UUID.fromString(productId)
         );
         log.info("Getting wish {} of customer's {} wishlist", productId, customerId);
-        FindOutPut output = this.findUseCase.execute(input);
-        ItemsResponse response = new ItemsResponse(
-                output.name(),
-                output.description(),
-                output.amount()
-        );
-
-        return ResponseEntity.ok(response);
+        try {
+            FindOutPut output = this.findUseCase.execute(input);
+            ItemsResponse response = new ItemsResponse(
+                    output.name(),
+                    output.description(),
+                    output.amount()
+            );
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
 
     @GetMapping()
