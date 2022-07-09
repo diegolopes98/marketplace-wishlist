@@ -16,6 +16,7 @@ import com.marketplace.wishlist.infrastructure.models.ItemsResponse;
 import com.marketplace.wishlist.infrastructure.models.WishlistResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -72,15 +73,20 @@ public class WishlistController {
     ResponseEntity delete (
             @PathVariable final String customerId,
             @PathVariable final String productId
-    ) throws Exception {
+    ) {
         DeleteInput input = DeleteInput.with(
                 UUID.fromString(customerId),
                 UUID.fromString(productId)
         );
-        log.info("Deleting wish {} of customer's {} wishlist", productId, customerId);
-        this.deleteUseCase.execute(input);
 
-        return ResponseEntity.noContent().build();
+        try {
+            log.info("Deleting wish {} of customer's {} wishlist", productId, customerId);
+            this.deleteUseCase.execute(input);
+            return ResponseEntity.noContent().build();
+        }catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
     }
 
     @GetMapping(path = "/{productId}")
