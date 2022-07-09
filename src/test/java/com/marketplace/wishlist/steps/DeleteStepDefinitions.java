@@ -41,7 +41,7 @@ public class DeleteStepDefinitions extends SpringIntegrationTest {
         }
     }
 
-    @Then("the API must return {int}")
+    @Then("the Delete API must return {int}")
     public void theAPIMustReturn(int statusCode) {
         assert apiResponse.getStatus().equals(HttpStatus.resolve(statusCode));
     }
