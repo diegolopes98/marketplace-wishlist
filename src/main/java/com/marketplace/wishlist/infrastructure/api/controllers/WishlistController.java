@@ -62,11 +62,15 @@ public class WishlistController {
                 body.amount()
         );
         log.info("Creating wish {} into customer's {} wishlist", body, customerId);
-        AddOutput output = addUseCase.execute(input);
-        ItemsResponse response = new ItemsResponse(output.name(), output.description(), output.amount());
-        return ResponseEntity
-                .created(URI.create(customerId + "/wishlist/" + body.productId()))
-                .body(response);
+        try {
+            AddOutput output = addUseCase.execute(input);
+            ItemsResponse response = new ItemsResponse(output.name(), output.description(), output.amount());
+            return ResponseEntity
+                    .created(URI.create(customerId + "/wishlist/" + body.productId()))
+                    .body(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
     }
 
     @DeleteMapping(path = "/{productId}")

@@ -39,7 +39,7 @@ public class WishlistCassandraGateway implements WishlistGateway {
             throw e;
         }
 
-        repository.save(newWish);
+        repository.insert(newWish);
 
         return wish;
     }
