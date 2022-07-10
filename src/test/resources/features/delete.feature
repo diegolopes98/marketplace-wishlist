@@ -10,3 +10,11 @@ Feature: Delete Wishes
   Scenario: Delete non existent wish
     When the API receive a delete for wish "489217dd-8860-47d3-a2c6-625b27d88aed" from customer id "fc5d8209-cf41-4102-a851-81c715f2e921"
     Then the Delete API must return 404
+
+  Scenario: Delete an unprocessable wish id
+    When the API receive a delete for wish "test" from customer id "fc5d8209-cf41-4102-a851-81c715f2e921"
+    Then the Delete API must return 422
+
+  Scenario: Delete an unprocessable customer id
+    When the API receive a delete for wish "57ab8693-b83e-409d-862b-bc4cb6ccab55" from customer id "test"
+    Then the Delete API must return 422
