@@ -19,21 +19,21 @@ public class UseCaseConfiguration {
     }
 
     @Bean
-    public DeleteUseCase deleteUseCase (
+    public DeleteUseCase deleteUseCase(
             WishlistGateway gateway
     ) {
         return new DeleteUseCase(gateway);
     }
 
     @Bean
-    public GetUseCase findUseCase (
+    public GetUseCase findUseCase(
             WishlistGateway gateway
     ) {
         return new GetUseCase(gateway);
     }
 
     @Bean
-    public GetAllUseCase getAllUseCase (
+    public GetAllUseCase getAllUseCase(
             WishlistGateway gateway
     ) {
         return new GetAllUseCase(gateway);

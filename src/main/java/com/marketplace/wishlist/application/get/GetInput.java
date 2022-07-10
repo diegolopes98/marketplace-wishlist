@@ -1,14 +1,12 @@
 package com.marketplace.wishlist.application.get;
 
-import java.util.UUID;
-
 public record GetInput(
-        UUID customerId,
-        UUID productId
+        String customerId,
+        String productId
 ) {
     public static GetInput with(
-            UUID customerId,
-            UUID productId
+            String customerId,
+            String productId
     ) {
         return new GetInput(customerId, productId);
     }

@@ -1,15 +1,15 @@
 package com.marketplace.wishlist.application.getAll;
 
-public record GetAllOutPut (
+import com.marketplace.wishlist.domain.Wish;
+
+public record GetAllOutPut(
         String name,
         String description,
         Integer amount
 ) {
-    public static GetAllOutPut with(
-            String name,
-            String description,
-            Integer amount
+    public static GetAllOutPut from(
+            Wish wish
     ) {
-        return new GetAllOutPut(name, description, amount);
+        return new GetAllOutPut(wish.getName(), wish.getDescription(), wish.getAmount());
     }
 }

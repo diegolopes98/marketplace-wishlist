@@ -2,21 +2,15 @@ package com.marketplace.wishlist.infrastructure.gateways;
 
 import com.marketplace.wishlist.domain.Wish;
 import com.marketplace.wishlist.domain.WishID;
-import com.marketplace.wishlist.domain.Wishlist;
 import com.marketplace.wishlist.domain.WishlistGateway;
 import com.marketplace.wishlist.infrastructure.persistence.WishByCustomer;
 import com.marketplace.wishlist.infrastructure.persistence.WishByCustomerRepository;
-import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
-@Slf4j
 public class WishlistCassandraGateway implements WishlistGateway {
-
-    private static final Integer MAX_SIZE = 20;
     private WishByCustomerRepository repository;
 
     public WishlistCassandraGateway(WishByCustomerRepository repository) {
@@ -24,92 +18,66 @@ public class WishlistCassandraGateway implements WishlistGateway {
     }
 
     @Override
-    public Wish add(Wish wish) throws Exception {
-        WishByCustomer newWish = new WishByCustomer(
-                UUID.fromString(wish.getCustomerId().getValue()),
-                UUID.fromString(wish.getProductId().getValue()),
-                wish.getName(),
-                wish.getDescription(),
-                wish.getAmount()
+    public void deleteByIds(WishID customerId, WishID productId) {
+        Optional<WishByCustomer> toBeDeleted = this.repository.findByCustomerIdAndProductId(
+                customerId.getUUIDValue(),
+                productId.getUUIDValue()
         );
-
-        if (!this.validate(newWish.getCustomerId())) {
-            Exception e = new Exception("Max items reached in wishlist");
-            log.error("Failed to generate new wish {} because of error {}", newWish, e);
-            throw e;
+        if (toBeDeleted.isPresent()) {
+            this.repository.delete(toBeDeleted.get());
         }
-
-        repository.insert(newWish);
-
-        return wish;
-    }
-
-    // TODO: add validation to domain layer
-    private boolean validate(UUID customerId) {
-        return this.repository.countByCustomerId(customerId) < MAX_SIZE;
     }
 
     @Override
-    public void delete(WishID customerId, WishID productId) throws Exception {
-        Optional<WishByCustomer> wishToDelete = repository
-                .findByCustomerIdAndProductId(
-                        UUID.fromString(customerId.getValue()),
-                        UUID.fromString(productId.getValue())
-                );
-        if (wishToDelete.isEmpty()) {
-            Exception e = new Exception("Item not found in wishlist");
-            log.error(
-                    "Failed to delete wish {} of customer {} because of error {}",
-                    productId,
-                    customerId,
-                    e
-            );
-            throw e;
-        }
-        this.repository.delete(wishToDelete.get());
+    public boolean existsByIds(WishID customerId, WishID productId) {
+        Optional<WishByCustomer> existent = this.repository.findByCustomerIdAndProductId(
+                customerId.getUUIDValue(),
+                productId.getUUIDValue()
+        );
+        if (existent.isEmpty()) return false;
+        return true;
     }
 
     @Override
-    public Wish find(WishID customerId, WishID productId) throws Exception {
-        Optional<WishByCustomer> wish = this.repository.findByCustomerIdAndProductId(
-                UUID.fromString(customerId.getValue()),
-                UUID.fromString(productId.getValue())
-        );
-        if (wish.isEmpty()) {
-            Exception e = new Exception("Item not found in wishlist");
-            log.error(
-                    "Failed to find wish {} of customer {} because of error {}",
-                    productId,
-                    customerId,
-                    e
-            );
-            throw e;
-        }
-        Wish found = new Wish(
-                WishID.from(wish.get().getCustomerId()),
-                WishID.from(wish.get().getProductId()),
-                wish.get().getName(),
-                wish.get().getDescription(),
-                wish.get().getAmount()
-        );
-
-        return found;
+    public Integer countById(WishID customerId) {
+        return this.repository.countByCustomerId(customerId.getUUIDValue());
     }
 
     @Override
-    public Wishlist getAll(WishID customerId) throws Exception {
-        List<WishByCustomer> wishes = this.repository.findByCustomerId(UUID.fromString(customerId.getValue()));
-        List<Wish> wishesMapped = wishes
+    public List<Wish> getAllByCustomerId(WishID customerId) {
+        return this.repository
+                .findAllByCustomerId(customerId.getUUIDValue())
                 .stream()
-                .map((wish) -> new Wish(
-                        WishID.from(wish.getCustomerId()),
-                        WishID.from(wish.getProductId()),
-                        wish.getName(),
-                        wish.getDescription(),
-                        wish.getAmount()
+                .map(entity -> new Wish(
+                        WishID.from(entity.getCustomerId()),
+                        WishID.from(entity.getProductId()),
+                        entity.getName(),
+                        entity.getDescription(),
+                        entity.getAmount()
                 ))
                 .collect(Collectors.toList());
-        Wishlist wishlist = new Wishlist(wishesMapped);
-        return wishlist;
+    }
+
+    @Override
+    public Optional<Wish> getByCustomerIdAndProductId(WishID customerId, WishID productId) {
+        Optional<WishByCustomer> found = this.repository.findByCustomerIdAndProductId(
+                customerId.getUUIDValue(),
+                productId.getUUIDValue()
+        );
+        if (found.isEmpty()) return Optional.empty();
+        return Optional.of(new Wish(
+                WishID.from(found.get().getCustomerId()),
+                WishID.from(found.get().getProductId()),
+                found.get().getName(),
+                found.get().getDescription(),
+                found.get().getAmount()
+        ));
+    }
+
+    @Override
+    public Wish save(Wish newWish) {
+        WishByCustomer toSave = WishByCustomer.from(newWish);
+        this.repository.save(toSave);
+        return newWish;
     }
 }

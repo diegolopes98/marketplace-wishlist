@@ -1,12 +1,18 @@
 package com.marketplace.wishlist.domain;
 
+import java.util.List;
+import java.util.Optional;
+
 public interface WishlistGateway {
-    Wish add(Wish wish) throws Exception;
+    void deleteByIds(final WishID customerId, final WishID productId);
 
-    void delete(WishID customerId, WishID productId) throws Exception;
+    boolean existsByIds(final WishID customerId, final WishID productId);
 
-    Wish find(WishID customerID, WishID productId) throws Exception;
+    Integer countById(final WishID customerId);
 
-    Wishlist getAll(WishID customerId) throws Exception;
+    List<Wish> getAllByCustomerId(final WishID customerId);
 
+    Optional<Wish> getByCustomerIdAndProductId(final WishID customerId, final WishID productId);
+
+    Wish save(final Wish newWish);
 }

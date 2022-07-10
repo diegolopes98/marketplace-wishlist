@@ -8,9 +8,11 @@ import java.util.UUID;
 
 public interface WishByCustomerRepository extends CassandraRepository<WishByCustomer, UUID> {
     Integer countByCustomerId(UUID customerId);
-    List<WishByCustomer> findByCustomerId(UUID customerId);
+
+    List<WishByCustomer> findAllByCustomerId(UUID customerId);
+
     default Optional<WishByCustomer> findByCustomerIdAndProductId(UUID customerId, UUID productId) {
-        List<WishByCustomer> list = this.findByCustomerId(customerId);
+        List<WishByCustomer> list = this.findAllByCustomerId(customerId);
         Optional<WishByCustomer> filtered = list.stream()
                 .filter(wishByCustomer -> wishByCustomer.getProductId().equals(productId))
                 .findFirst();

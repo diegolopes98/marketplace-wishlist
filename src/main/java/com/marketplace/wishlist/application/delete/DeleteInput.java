@@ -1,15 +1,13 @@
 package com.marketplace.wishlist.application.delete;
 
 
-import java.util.UUID;
-
-public record DeleteInput (
-        UUID customerId,
-        UUID productId
+public record DeleteInput(
+        String customerId,
+        String productId
 ) {
     public static DeleteInput with(
-            final UUID customerId,
-            final UUID productId
+            final String customerId,
+            final String productId
     ) {
         return new DeleteInput(customerId, productId);
     }

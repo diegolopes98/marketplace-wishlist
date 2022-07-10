@@ -1,8 +1,9 @@
 package com.marketplace.wishlist.application.getAll;
 
+import com.marketplace.wishlist.domain.Wish;
 import com.marketplace.wishlist.domain.WishID;
-import com.marketplace.wishlist.domain.Wishlist;
 import com.marketplace.wishlist.domain.WishlistGateway;
+import com.marketplace.wishlist.domain.exceptions.BadUUIDException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,16 +16,12 @@ public class GetAllUseCase {
         this.gateway = gateway;
     }
 
-    public List<GetAllOutPut> execute(GetAllInput input) throws Exception {
-        Wishlist wishlist = this.gateway.getAll(WishID.from(input.customerId()));
-        return wishlist
-                .getItems()
+    public List<GetAllOutPut> execute(GetAllInput input) throws BadUUIDException {
+        WishID customerId = WishID.from(input.customerId());
+        List<Wish> wishes = this.gateway.getAllByCustomerId(customerId);
+        return wishes
                 .stream()
-                .map((wish -> GetAllOutPut.with(
-                        wish.getName(),
-                        wish.getDescription(),
-                        wish.getAmount()
-                )))
+                .map(wish -> GetAllOutPut.from(wish))
                 .collect(Collectors.toList());
     }
 }

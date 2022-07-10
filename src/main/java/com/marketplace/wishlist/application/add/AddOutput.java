@@ -1,15 +1,15 @@
 package com.marketplace.wishlist.application.add;
 
-public record AddOutput (
+import com.marketplace.wishlist.domain.Wish;
+
+public record AddOutput(
         String name,
         String description,
         Integer amount
 ) {
-    public static AddOutput with(
-            final String name,
-            final String description,
-            final Integer amount
+    public static AddOutput from(
+            final Wish wish
     ) {
-        return new AddOutput(name, description, amount);
+        return new AddOutput(wish.getName(), wish.getDescription(), wish.getAmount());
     }
 }
