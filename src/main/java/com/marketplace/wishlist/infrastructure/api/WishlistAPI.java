@@ -51,7 +51,7 @@ public class WishlistAPI {
     }
 
     @PostMapping
-    public ResponseEntity<ItemsResponse> add(
+    public ResponseEntity<ItemsResponse> post(
             @PathVariable final String customerId,
             @RequestBody final ItemsRequest body
     ) throws MaxLimitExceededException, BadUUIDException {
