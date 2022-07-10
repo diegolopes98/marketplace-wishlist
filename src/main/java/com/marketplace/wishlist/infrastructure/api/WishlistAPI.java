@@ -17,6 +17,9 @@ import com.marketplace.wishlist.domain.exceptions.MaxLimitExceededException;
 import com.marketplace.wishlist.infrastructure.models.ItemsRequest;
 import com.marketplace.wishlist.infrastructure.models.ItemsResponse;
 import com.marketplace.wishlist.infrastructure.models.WishlistResponse;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -51,6 +54,13 @@ public class WishlistAPI {
     }
 
     @PostMapping
+    @Operation(summary = "Create new wish to customer's wishlist")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Created Successfully"),
+            @ApiResponse(responseCode = "400", description = "Customer has reached max wishes"),
+            @ApiResponse(responseCode = "422", description = "An invalid Id was given"),
+            @ApiResponse(responseCode = "500", description = "An internal server error was thrown"),
+    })
     public ResponseEntity<ItemsResponse> post(
             @PathVariable final String customerId,
             @RequestBody final ItemsRequest body
@@ -71,6 +81,13 @@ public class WishlistAPI {
     }
 
     @DeleteMapping(path = "/{productId}")
+    @Operation(summary = "Delete wish of customer's wishlist")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Deleted Successfully"),
+            @ApiResponse(responseCode = "404", description = "Not found entity to delete"),
+            @ApiResponse(responseCode = "422", description = "An invalid Id was given"),
+            @ApiResponse(responseCode = "500", description = "An internal server error was thrown"),
+    })
     ResponseEntity delete(
             @PathVariable final String customerId,
             @PathVariable final String productId
@@ -85,10 +102,17 @@ public class WishlistAPI {
     }
 
     @GetMapping(path = "/{productId}")
+    @Operation(summary = "Get wish of customer's wishlist")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Get Successfully"),
+            @ApiResponse(responseCode = "404", description = "Not found entity to get"),
+            @ApiResponse(responseCode = "422", description = "An invalid Id was given"),
+            @ApiResponse(responseCode = "500", description = "An internal server error was thrown"),
+    })
     public ResponseEntity<ItemsResponse> get(
             @PathVariable final String customerId,
             @PathVariable final String productId
-    ) throws Exception {
+    ) throws BadUUIDException, NotFoundException {
         GetInput input = GetInput.with(
                 customerId,
                 productId
@@ -104,9 +128,15 @@ public class WishlistAPI {
     }
 
     @GetMapping()
+    @Operation(summary = "Get all wishes of customer's wishlist")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Get Successfully"),
+            @ApiResponse(responseCode = "422", description = "An invalid Id was given"),
+            @ApiResponse(responseCode = "500", description = "An internal server error was thrown"),
+    })
     public ResponseEntity<WishlistResponse> getAll(
             @PathVariable final String customerId
-    ) throws Exception {
+    ) throws BadUUIDException {
         GetAllInput input = GetAllInput.with(customerId);
         log.info("Getting all wishes of customer's {} wishlist", customerId);
         List<GetAllOutPut> outputList = this.getAllUseCase.execute(input);
