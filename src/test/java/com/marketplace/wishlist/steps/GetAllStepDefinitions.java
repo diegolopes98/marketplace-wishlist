@@ -16,7 +16,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.UUID;
 
-public class GetAllStepDefinitions extends SpringIntegrationTest {
+public class GetAllStepDefinitions {
 
     private final String EMPTY_RESPONSE = "{\"items\":[]}";
     private HttpResponse apiResponse;

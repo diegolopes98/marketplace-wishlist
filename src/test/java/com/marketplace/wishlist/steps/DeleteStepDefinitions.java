@@ -1,6 +1,5 @@
 package com.marketplace.wishlist.steps;
 
-import com.marketplace.wishlist.SpringIntegrationTest;
 import com.marketplace.wishlist.utils.HttpResponse;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -12,7 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
-public class DeleteStepDefinitions extends SpringIntegrationTest {
+public class DeleteStepDefinitions {
 
     private HttpResponse apiResponse;
     private RestTemplate restTemplate;
@@ -24,6 +23,7 @@ public class DeleteStepDefinitions extends SpringIntegrationTest {
         this.restTemplate = restTemplate;
         this.apiResponse = new HttpResponse();
     }
+
     @When("the API receive a delete for wish {string} from customer id {string}")
     public void theAPIReceiveADeleteForWishFromCustomerId(String productId, String customerId) {
         try {

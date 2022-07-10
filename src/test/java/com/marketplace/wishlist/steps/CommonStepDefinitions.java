@@ -1,6 +1,5 @@
 package com.marketplace.wishlist.steps;
 
-import com.marketplace.wishlist.SpringIntegrationTest;
 import com.marketplace.wishlist.infrastructure.persistence.WishByCustomer;
 import com.marketplace.wishlist.infrastructure.persistence.WishByCustomerRepository;
 import io.cucumber.java.en.Given;
@@ -9,7 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
-public class CommonStepDefinitions extends SpringIntegrationTest {
+public class CommonStepDefinitions {
 
 
     private WishByCustomerRepository repository;
