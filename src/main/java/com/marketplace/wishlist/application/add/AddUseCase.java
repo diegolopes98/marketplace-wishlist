@@ -1,17 +1,16 @@
-package com.marketplace.wishlist.application.wishlist.add;
+package com.marketplace.wishlist.application.add;
 
 import com.marketplace.wishlist.domain.Wish;
 import com.marketplace.wishlist.domain.WishID;
 import com.marketplace.wishlist.domain.WishlistGateway;
 
-public class DefaultAddUseCase extends AddUseCase {
+public class AddUseCase {
     private WishlistGateway gateway;
 
-    public DefaultAddUseCase(WishlistGateway gateway) {
+    public AddUseCase(WishlistGateway gateway) {
         this.gateway = gateway;
     }
 
-    @Override
     public AddOutput execute(AddInput input) throws Exception {
         Wish wishToAdd = new Wish(
                 WishID.from(input.customerId()),

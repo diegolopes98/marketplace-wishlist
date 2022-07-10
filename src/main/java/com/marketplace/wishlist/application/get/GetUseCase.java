@@ -1,24 +1,23 @@
-package com.marketplace.wishlist.application.wishlist.find;
+package com.marketplace.wishlist.application.get;
 
 import com.marketplace.wishlist.domain.Wish;
 import com.marketplace.wishlist.domain.WishID;
 import com.marketplace.wishlist.domain.WishlistGateway;
 
-public class DefaultFindUseCase extends FindUseCase {
+public class GetUseCase {
 
     private WishlistGateway gateway;
 
-    public DefaultFindUseCase(WishlistGateway gateway) {
+    public GetUseCase(WishlistGateway gateway) {
         this.gateway = gateway;
     }
 
-    @Override
-    public FindOutPut execute(FindInput input) throws Exception {
+    public GetOutPut execute(GetInput input) throws Exception {
         Wish wish = this.gateway.find(
                 WishID.from(input.customerId()),
                 WishID.from(input.productId())
         );
-        return FindOutPut.with(
+        return GetOutPut.with(
                 wish.getName(),
                 wish.getDescription(),
                 wish.getAmount()

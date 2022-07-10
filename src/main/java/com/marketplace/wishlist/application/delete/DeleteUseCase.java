@@ -1,17 +1,16 @@
-package com.marketplace.wishlist.application.wishlist.delete;
+package com.marketplace.wishlist.application.delete;
 
 import com.marketplace.wishlist.domain.WishID;
 import com.marketplace.wishlist.domain.WishlistGateway;
 
-public class DefaultDeleteUseCase extends DeleteUseCase {
+public class DeleteUseCase {
 
     private WishlistGateway gateway;
 
-    public DefaultDeleteUseCase(WishlistGateway gateway) {
+    public DeleteUseCase(WishlistGateway gateway) {
         this.gateway = gateway;
     }
 
-    @Override
     public void execute(DeleteInput input) throws Exception {
         gateway.delete(
                 WishID.from(input.customerId()),

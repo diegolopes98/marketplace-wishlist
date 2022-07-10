@@ -1,4 +1,4 @@
-package com.marketplace.wishlist.application.wishlist.delete;
+package com.marketplace.wishlist.application.delete;
 
 
 import java.util.UUID;

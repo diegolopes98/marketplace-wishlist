@@ -1,16 +1,16 @@
-package com.marketplace.wishlist.infrastructure.api.controllers;
+package com.marketplace.wishlist.infrastructure.api;
 
-import com.marketplace.wishlist.application.wishlist.add.AddInput;
-import com.marketplace.wishlist.application.wishlist.add.AddOutput;
-import com.marketplace.wishlist.application.wishlist.add.AddUseCase;
-import com.marketplace.wishlist.application.wishlist.delete.DeleteInput;
-import com.marketplace.wishlist.application.wishlist.delete.DeleteUseCase;
-import com.marketplace.wishlist.application.wishlist.find.FindInput;
-import com.marketplace.wishlist.application.wishlist.find.FindOutPut;
-import com.marketplace.wishlist.application.wishlist.find.FindUseCase;
-import com.marketplace.wishlist.application.wishlist.getAll.GetAllInput;
-import com.marketplace.wishlist.application.wishlist.getAll.GetAllOutPut;
-import com.marketplace.wishlist.application.wishlist.getAll.GetAllUseCase;
+import com.marketplace.wishlist.application.add.AddInput;
+import com.marketplace.wishlist.application.add.AddOutput;
+import com.marketplace.wishlist.application.add.AddUseCase;
+import com.marketplace.wishlist.application.delete.DeleteInput;
+import com.marketplace.wishlist.application.delete.DeleteUseCase;
+import com.marketplace.wishlist.application.get.GetInput;
+import com.marketplace.wishlist.application.get.GetOutPut;
+import com.marketplace.wishlist.application.get.GetUseCase;
+import com.marketplace.wishlist.application.getAll.GetAllInput;
+import com.marketplace.wishlist.application.getAll.GetAllOutPut;
+import com.marketplace.wishlist.application.getAll.GetAllUseCase;
 import com.marketplace.wishlist.infrastructure.models.ItemsRequest;
 import com.marketplace.wishlist.infrastructure.models.ItemsResponse;
 import com.marketplace.wishlist.infrastructure.models.WishlistResponse;
@@ -28,24 +28,24 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/{customerId}/wishlist")
 @Slf4j
-public class WishlistController {
+public class WishlistAPI {
     private final AddUseCase addUseCase;
     private final DeleteUseCase deleteUseCase;
 
-    private final FindUseCase findUseCase;
+    private final GetUseCase getUseCase;
 
     private final GetAllUseCase getAllUseCase;
 
     @Autowired
-    public WishlistController(
+    public WishlistAPI(
             AddUseCase addUseCase,
             DeleteUseCase deleteUseCase,
-            FindUseCase findUseCase,
+            GetUseCase getUseCase,
             GetAllUseCase getAllUseCase
     ) {
         this.addUseCase = addUseCase;
         this.deleteUseCase = deleteUseCase;
-        this.findUseCase = findUseCase;
+        this.getUseCase = getUseCase;
         this.getAllUseCase = getAllUseCase;
     }
 
@@ -94,17 +94,17 @@ public class WishlistController {
     }
 
     @GetMapping(path = "/{productId}")
-    public ResponseEntity<ItemsResponse> find (
+    public ResponseEntity<ItemsResponse> get (
             @PathVariable final String customerId,
             @PathVariable final String productId
     ) throws Exception {
-        FindInput input = FindInput.with(
+        GetInput input = GetInput.with(
                 UUID.fromString(customerId),
                 UUID.fromString(productId)
         );
         log.info("Getting wish {} of customer's {} wishlist", productId, customerId);
         try {
-            FindOutPut output = this.findUseCase.execute(input);
+            GetOutPut output = this.getUseCase.execute(input);
             ItemsResponse response = new ItemsResponse(
                     output.name(),
                     output.description(),

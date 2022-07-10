@@ -1,4 +1,4 @@
-package com.marketplace.wishlist.application.wishlist.getAll;
+package com.marketplace.wishlist.application.getAll;
 
 import java.util.UUID;
 

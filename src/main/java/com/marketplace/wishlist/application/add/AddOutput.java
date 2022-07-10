@@ -1,4 +1,4 @@
-package com.marketplace.wishlist.application.wishlist.add;
+package com.marketplace.wishlist.application.add;
 
 public record AddOutput (
         String name,
