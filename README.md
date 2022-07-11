@@ -16,8 +16,8 @@ Do not worry about authentication, products or customers data management and eac
 ## Develop Environment
 
 You can run ```mvn spring-boot:run``` to start up the application at port ```8080```, in order to the application starts
-well you must have a cassandra database running at port ```9042``` but if you don't have use ```docker-compose up``` to start it. Once
-you see the bellow message at the terminal the container is ready:
+well you must have a cassandra database running at port ```9042``` but if you don't have use ```docker-compose up``` after running the shell
+script ```.cassandra/setup_docker.sh``` to start it. Once you see the bellow message at the terminal the container is ready:
 
 ```
 wishlist-cassandra-load-schema exited with code 0
